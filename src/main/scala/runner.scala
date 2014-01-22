@@ -1,4 +1,3 @@
-//copied from orig gatling sources
 package gatling.sbt
 
 import java.util.concurrent.CountDownLatch
@@ -49,7 +48,7 @@ class AdaptedRunner[S <: Simulation](simulation: S) extends AkkaDefaults with Lo
       logger.debug(s"Launching All Scenarios with UUID:$runUUID")
 
       scenarios.foldLeft(0) { (i, scenario) =>
-        scenario.run(runUUID + "-", i)
+        scenario.run(i)
         i + scenario.injectionProfile.users
       }
       logger.debug("Finished Launching scenarios executions")

@@ -7,34 +7,37 @@ object MinimalBuild extends Build {
   val appName = "gatling-sbt-quickstart"
   val buildVersion =  "0.0.1-SNAPSHOT"
 
-  val localIvyRepo =  Resolver.file("Local ivy2 Repository", file(Path.userHome.absolutePath+"/.ivy2/local"))(Resolver.ivyStylePatterns)
+  //val localIvyRepo =  Resolver.file("Local ivy2 Repository", file(Path.userHome.absolutePath+"/.ivy2/local"))(Resolver.ivyStylePatterns)
 
   val gatSbtTestVersion = "0.0.1-SNAPSHOT"
 
   val libDependencies = Seq(
-    "gatling" %% "gatling-sbt-test-framework" % gatSbtTestVersion % "perf",
+    //"gatling" %% "gatling-sbt-plugin" % gatSbtTestVersion % "perf",
 
     "ch.qos.logback" % "logback-classic" % "1.0.13",
     "io.spray" % "spray-routing" % "1.2-20130710",
-    "io.spray" % "spray-can" % "1.2-20130710"
+    "io.spray" % "spray-can" % "1.2-20130710",
+
+    "com.typesafe.akka" %% "akka-actor" % "2.1.4",
+    "com.typesafe.akka" %% "akka-slf4j" % "2.1.4"
   )
 
   lazy val allSettings =
     Project.defaultSettings ++
     GatlingPlugin.gatlingSettings ++
     Seq(
-      scalaVersion := "2.10.2",
+      scalaVersion := "2.10.3",
       version := buildVersion,
       organization := "gatling",
-      resolvers += localIvyRepo,
+      //resolvers += localIvyRepo,
       resolvers += "spray repo" at "http://repo.spray.io",
       resolvers += "spray nightlies repo" at "http://nightlies.spray.io",
-      resolvers += "Local Maven Repository" at file(Path.userHome.absolutePath+"/.m2/repository").toURI.toURL.toString,
+      //resolvers += "Local Maven Repository" at file(Path.userHome.absolutePath+"/.m2/repository").toURI.toURL.toString,
       resolvers += "Gatling Cloudbees" at "http://repository-gatling.forge.cloudbees.com/snapshot",
       javacOptions += "-Xlint:unchecked",
       libraryDependencies ++= libDependencies
     )
 
-  lazy val root = Project(id = appName, base = file(".")).configs(GatlingPlugin.PerfTest).settings(allSettings: _*)
+  lazy val root = Project(id = appName, base = file(".")).configs(GatlingPlugin.PerfTest).settings(allSettings: _*).dependsOn(file("../../../gatling-sbt") % "perf")
 
 }
